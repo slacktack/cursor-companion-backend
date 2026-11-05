@@ -1,0 +1,9 @@
+{
+  "name": "Pal Link",
+  "short_name": "Pal Link",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffe4ef",
+  "theme_color": "#ffe4ef",
+  "icons": [{ "src": "/icon.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }]
+}

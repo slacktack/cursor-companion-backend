@@ -1,0 +1,1144 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="theme-color" content="#ffe4ef">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Pal Link">
+<title>Pal Link</title>
+<link rel="manifest" href="/manifest.webmanifest">
+<script src="/flower.js"></script>
+<link rel="apple-touch-icon" href="/icon.png">
+<link rel="icon" href="/icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg1: #ffe4ef; --bg2: #e9e4ff; --card: rgba(255,255,255,.72); --ink: #4a3550; --soft: #9a84a3;
+  --pink: #ff7da8; --pink2: #ff9fc0; --blue: #8ec9f7; --lilac: #9fa9ec; --leaf: #6cc58a; --gold: #ffd45e;
+  --shadow: 0 10px 30px rgba(180, 90, 140, .16);
+}
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { margin: 0; height: 100%; overscroll-behavior: none; }
+body {
+  font-family: Nunito, ui-rounded, system-ui, sans-serif; color: var(--ink);
+  background: linear-gradient(160deg, var(--bg1), var(--bg2)); background-attachment: fixed;
+  padding: env(safe-area-inset-top) 16px calc(env(safe-area-inset-bottom) + 16px);
+  -webkit-user-select: none; user-select: none;
+}
+button { font: inherit; color: inherit; border: 0; cursor: pointer; }
+input { font: inherit; color: var(--ink); }
+.wrap { max-width: 440px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px; padding-top: 14px; }
+.card { background: var(--card); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-radius: 26px; box-shadow: var(--shadow); padding: 16px; }
+.hidden { display: none !important; }
+
+/* header */
+.top { display: flex; align-items: center; gap: 12px; }
+.avatar { width: 58px; height: 58px; border-radius: 20px; background: #fff; display: grid; place-items: center; box-shadow: var(--shadow); flex: none; position: relative; }
+.avatar img { width: 48px; height: 48px; object-fit: contain; }
+.dot { position: absolute; right: -3px; bottom: -3px; width: 18px; height: 18px; border-radius: 50%; border: 3px solid #fff; background: #c8bccd; }
+.dot.on { background: #4cd07d; box-shadow: 0 0 0 0 rgba(76,208,125,.6); animation: ping 2s infinite; }
+@keyframes ping { 0% { box-shadow: 0 0 0 0 rgba(76,208,125,.55) } 80%,100% { box-shadow: 0 0 0 10px rgba(76,208,125,0) } }
+.who { flex: 1; min-width: 0; }
+.who h1 { margin: 0; font-size: 22px; font-weight: 900; }
+.who p { margin: 2px 0 0; font-size: 13px; color: var(--soft); font-weight: 700; }
+.stpill { height: 34px; padding: 0 12px; border-radius: 99px; background: var(--card); font-weight: 900; font-size: 12.5px; box-shadow: var(--shadow); white-space: nowrap; }
+.stpill.busy { background: #3a2550; color: #fff; }
+.dot.busy { background: #ffb02e; }
+.net.dnd { background: #f1e9ff; color: #6a4fc0; }
+.gear { width: 38px; height: 38px; border-radius: 14px; background: var(--card); font-size: 18px; }
+.net { text-align: center; font-size: 12px; font-weight: 800; color: #b0577a; background: #fff0f5; border-radius: 12px; padding: 6px; }
+
+/* boop */
+.boopcard { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 22px 16px 16px; }
+.boop {
+  width: 168px; height: 168px; border-radius: 50%; position: relative;
+  background: radial-gradient(circle at 35% 30%, #ffc2d8, var(--pink) 60%, #f0628f);
+  box-shadow: 0 14px 34px rgba(255, 90, 140, .45), inset 0 -8px 18px rgba(200,40,90,.25), inset 0 6px 14px rgba(255,255,255,.5);
+  display: grid; place-items: center; transition: transform .12s;
+}
+.boop:active { transform: scale(.92); }
+.boop svg { width: 84px; height: 84px; filter: drop-shadow(0 4px 6px rgba(160,30,80,.25)); }
+.boop.pulse { animation: boing .5s; }
+@keyframes boing { 0% { transform: scale(1) } 25% { transform: scale(.86, .9) } 55% { transform: scale(1.08) } 80% { transform: scale(.97) } 100% { transform: scale(1) } }
+.boopcount { font-size: 13px; font-weight: 800; color: var(--soft); }
+.row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.big { border-radius: 22px; padding: 16px 10px; background: var(--card); box-shadow: var(--shadow); font-weight: 900; font-size: 16px; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.big span { font-size: 28px; }
+.big small { font-size: 11px; color: var(--soft); font-weight: 700; }
+.big:active { transform: scale(.96); }
+
+/* voice */
+.voice { width: 100%; border-radius: 22px; padding: 16px; background: var(--card); box-shadow: var(--shadow); font-weight: 900; font-size: 16px; display: flex; align-items: center; justify-content: center; gap: 10px; touch-action: none; -webkit-touch-callout: none; }
+.voice span { font-size: 24px; }
+.voice.rec { background: linear-gradient(180deg, #ff8fa3, #ff5a7a); color: #fff; animation: recpulse 1s infinite; }
+@keyframes recpulse { 50% { box-shadow: 0 0 0 10px rgba(255, 90, 122, .18) } }
+.notes { display: flex; flex-direction: column; gap: 8px; }
+.notes h3 { margin: 0 0 2px; font-size: 15px; font-weight: 900; }
+.vn { display: flex; align-items: center; gap: 10px; background: #fff; border-radius: 16px; padding: 8px 10px; }
+.vn button { width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(180deg, var(--pink2), var(--pink)); color: #fff; font-size: 15px; flex: none; }
+.vn .wave { flex: 1; height: 6px; border-radius: 6px; background: #f3dbe6; overflow: hidden; }
+.vn .wave i { display: block; height: 100%; width: 0; background: var(--pink); }
+.vn small { font-size: 11.5px; font-weight: 800; color: var(--soft); white-space: nowrap; }
+.vn.new { box-shadow: 0 0 0 2px var(--pink2); }
+
+/* voice sheet */
+.vsheet { text-align: center; }
+.vsub { font-size: 13px; font-weight: 700; color: rgba(255,255,255,.6); margin: -6px 0 14px; }
+.vwave { height: 64px; display: flex; align-items: center; justify-content: center; gap: 3px; }
+.vwave i { width: 5px; border-radius: 5px; background: rgba(255,255,255,.3); height: 6px; transition: height .08s; }
+.vwave.live i { background: linear-gradient(0deg, #ff6b9e, #8c6bff); }
+.vwave i.on { background: #ff7da8; }
+.vclock { font: 700 14px ui-monospace, monospace; color: rgba(255,255,255,.8); margin: 8px 0 16px; }
+.vctl { display: flex; align-items: center; justify-content: center; gap: 14px; min-height: 66px; }
+.rbtn { width: 66px; height: 66px; border-radius: 50%; background: #ff5468; box-shadow: 0 0 22px rgba(255,84,104,.7); display: grid; place-items: center; color: #fff; font-size: 26px; }
+.rbtn .sq { width: 22px; height: 22px; border-radius: 6px; background: #fff; }
+.rbtn.rec { animation: recpulse 1s infinite; }
+.pbtn { width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(135deg, #8c6bff, #ff6b9e); box-shadow: 0 0 18px rgba(140,107,255,.6); color: #fff; font-size: 22px; }
+.vpill { height: 44px; padding: 0 18px; border-radius: 99px; font-weight: 900; color: #fff; background: rgba(255,255,255,.12); }
+.vpill.send { background: linear-gradient(90deg, #ff6b9e, #ff9f73); box-shadow: 0 8px 20px rgba(255,110,160,.5); }
+
+/* garden */
+.garden { padding: 16px 16px 18px; }
+.ghead { display: flex; align-items: flex-start; justify-content: space-between; }
+.gkick { font-size: 11px; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; color: var(--soft); }
+.garden h2 { margin: 2px 0 0; font-size: 22px; font-weight: 900; }
+.streak { font-size: 12px; font-weight: 900; padding: 6px 10px; border-radius: 99px; color: #fff; background: linear-gradient(90deg, #ff8a3d, #ff5a8a); box-shadow: 0 6px 14px rgba(255,110,90,.35); }
+.stage { height: 300px; margin: 4px -8px 0; position: relative; }
+.stage svg { width: 100%; height: 100%; }
+.stage .sway { transform-origin: 150px 268px; animation: sway 5s ease-in-out infinite; }
+.stage.grow svg { animation: growpop .9s cubic-bezier(.3,1.6,.5,1); }
+@keyframes growpop { 0% { transform: scale(.82) translateY(10px) } 100% { transform: none } }
+@keyframes sway { 0%,100% { transform: rotate(-2deg) } 50% { transform: rotate(2deg) } }
+.drop { animation: fall .9s ease-in forwards; opacity: 0; }
+@keyframes fall { 0% { transform: translateY(0); opacity: 0 } 15% { opacity: .9 } 85% { opacity: .9 } 100% { transform: translateY(205px); opacity: 0 } }
+.gbar { height: 10px; border-radius: 10px; background: rgba(108,197,138,.16); overflow: hidden; margin-top: 4px; }
+.gbar i { display: block; height: 100%; width: 0; border-radius: 10px; background: linear-gradient(90deg, #9fe8b0, #4cc27a, #ff8fb5); transition: width .8s cubic-bezier(.3,1.3,.5,1); }
+.gsteps { display: flex; justify-content: space-between; font-size: 10.5px; font-weight: 900; color: #c4b2c9; margin: 6px 2px 0; }
+.gsteps .on { color: #3f9a5e; }
+.gchips { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 12px; }
+.gchip { font-size: 12px; font-weight: 800; padding: 6px 10px; border-radius: 99px; background: #fff; }
+.gchip.done { background: #dff6e6; color: #2f8a4f; }
+.ghint { margin: 10px 2px 12px; font-size: 13px; font-weight: 800; color: var(--soft); min-height: 18px; }
+.gbtns { display: flex; gap: 10px; }
+.gbtn { flex: 1; border-radius: 16px; padding: 13px 10px; font-weight: 900; font-size: 15px; }
+.gbtn.water { color: #fff; background: linear-gradient(180deg, #8ec9f7, #4f9fe6); box-shadow: 0 8px 18px rgba(80,150,220,.35); }
+.gbtn.pickb { background: #fff; color: var(--ink); box-shadow: 0 4px 12px rgba(180,90,140,.12); }
+.gbtn:disabled { opacity: .55; box-shadow: none; }
+.collection { margin-top: 16px; }
+.colhead { display: flex; justify-content: space-between; align-items: baseline; font-size: 14px; }
+.colhead span { font-size: 12px; font-weight: 800; color: var(--soft); }
+.colrow { display: flex; gap: 8px; overflow-x: auto; padding: 8px 2px 4px; scrollbar-width: none; }
+.colrow::-webkit-scrollbar { display: none; }
+.bloom { flex: none; width: 76px; text-align: center; font-size: 10px; font-weight: 800; color: var(--soft); }
+.bloom .mini { width: 76px; height: 76px; border-radius: 18px; background: #fff; overflow: hidden; }
+.bloom .mini svg { width: 120%; height: 150%; margin: -6px -10%; }
+.psheet { max-height: 86vh; overflow-y: auto; text-align: center; }
+.pgrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 6px; }
+.pf { background: rgba(255,255,255,.08); border-radius: 18px; padding: 6px 4px 8px; color: #fff; position: relative; border: 2px solid transparent; }
+.pf.mine { border-color: #ff7da8; box-shadow: 0 0 14px rgba(255,125,168,.5); }
+.pf .mini { height: 92px; overflow: hidden; }
+.pf .mini svg { width: 100%; height: 150%; margin-top: -8px; }
+.pf b { display: block; font-size: 12.5px; }
+.pf small { display: block; font-size: 10px; color: rgba(255,255,255,.55); font-weight: 700; }
+.pf .tag { position: absolute; top: 6px; left: 6px; font-size: 9.5px; font-weight: 900; padding: 2px 6px; border-radius: 99px; background: #ff7da8; }
+.pf .tag.p { left: auto; right: 6px; background: #8c6bff; }
+
+/* sheets */
+.sheet-bg { position: fixed; inset: 0; background: rgba(74, 53, 80, .25); z-index: 30; display: flex; align-items: flex-end; justify-content: center; }
+.sheet { width: 100%; max-width: 480px; color: #fff; background: radial-gradient(circle at 90% 0%, rgba(255,107,158,.55), transparent 55%), linear-gradient(160deg, #3a2550, #23173a); box-shadow: 0 -10px 40px rgba(120, 60, 160, .35); border-radius: 28px 28px 0 0; padding: 20px 18px calc(env(safe-area-inset-bottom) + 18px); animation: up .25s ease-out; }
+@keyframes up { from { transform: translateY(100%) } }
+.sheet h3 { margin: 0 0 12px; font-size: 20px; font-weight: 900; }
+.field { width: 100%; border: 1.5px solid #f3dbe6; border-radius: 16px; padding: 12px 14px; font-size: 16px; outline: none; background: #fff9fb; }
+.sheet .field { background: rgba(255,255,255,.1); border-color: rgba(255,255,255,.18); color: #fff; border-radius: 99px; padding: 13px 18px; }
+.sheet .field::placeholder { color: rgba(255,255,255,.45); }
+.sheet .field:focus { border-color: #ff7da8; box-shadow: 0 0 0 4px rgba(255,125,168,.18); }
+.field:focus { border-color: var(--pink2); }
+.stickers { display: flex; gap: 8px; flex-wrap: wrap; margin: 12px 0; }
+.stickers button { font-size: 24px; width: 46px; height: 46px; border-radius: 50%; background: rgba(255,255,255,.08); transition: transform .15s; }
+.stickers button.sel { background: rgba(255,125,168,.35); box-shadow: 0 0 0 2px #ff7da8, 0 0 14px rgba(255,125,168,.8); transform: scale(1.1); }
+.primary { width: 100%; border-radius: 99px; padding: 15px; font-weight: 900; font-size: 17px; color: #fff; background: linear-gradient(90deg, #ff6b9e, #ff9f73); box-shadow: 0 10px 26px rgba(255, 110, 160, .5); }
+.primary:disabled { opacity: .5; }
+.label { font-size: 12px; font-weight: 800; color: var(--soft); margin: 12px 0 6px; }
+.pals { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.pals button { flex: 1; background: #fff0f5; border-radius: 16px; padding: 8px; border: 3px solid transparent; }
+.pals button.sel { border-color: var(--pink2); }
+.pals img { width: 46px; height: 46px; object-fit: contain; display: block; margin: 0 auto 2px; }
+.pals span { font-size: 12px; font-weight: 800; }
+
+/* scribble */
+.scrib { position: fixed; inset: 0; z-index: 40; background: #fffafc; touch-action: none; }
+.scrib canvas { position: absolute; inset: 0; width: 100%; height: 100%; touch-action: none; }
+.scrib .hint { position: absolute; top: calc(env(safe-area-inset-top) + 14px); left: 0; right: 0; text-align: center; font-weight: 800; color: var(--soft); font-size: 13px; pointer-events: none; padding: 0 70px; }
+.tools { position: absolute; left: 8px; right: 8px; bottom: calc(env(safe-area-inset-bottom) + 8px); background: rgba(255,255,255,.94); border-radius: 22px; box-shadow: var(--shadow); padding: 10px; display: flex; flex-direction: column; gap: 8px; }
+.trow { display: flex; gap: 6px; align-items: center; overflow-x: auto; scrollbar-width: none; }
+.trow::-webkit-scrollbar { display: none; }
+#toolRow { flex-wrap: wrap; overflow: visible; row-gap: 8px; }
+.sw { width: 30px; height: 30px; border-radius: 50%; border: 3px solid #fff; box-shadow: 0 2px 6px rgba(0,0,0,.18); flex: none; }
+.sw.sel { outline: 3px solid var(--ink); outline-offset: 1px; }
+.picker { position: relative; width: 30px; height: 30px; border-radius: 50%; flex: none; background: conic-gradient(red, yellow, lime, cyan, blue, magenta, red); border: 3px solid #fff; box-shadow: 0 2px 6px rgba(0,0,0,.18); overflow: hidden; }
+.picker input { position: absolute; inset: -8px; opacity: 0; width: 50px; height: 50px; }
+.tb { flex: none; height: 34px; min-width: 34px; padding: 0 9px; border-radius: 12px; background: #f6eef3; font-weight: 900; font-size: 13px; display: grid; place-items: center; }
+.tb.sel { background: var(--ink); color: #fff; }
+.size i { display: block; border-radius: 50%; background: currentColor; }
+.sep { width: 1px; height: 24px; background: #eadbe3; flex: none; }
+.send { margin-left: auto; background: linear-gradient(180deg, var(--pink2), var(--pink)); color: #fff; }
+.close { position: absolute; top: calc(env(safe-area-inset-top) + 8px); right: 10px; width: 40px; height: 40px; border-radius: 14px; background: rgba(255,255,255,.9); box-shadow: var(--shadow); font-size: 18px; font-weight: 900; }
+
+/* embed (Mac garden window) */
+body.embed { padding: 10px 12px 14px; background: transparent; }
+body.embed .wrap > :not(#garden) { display: none !important; }
+body.embed .wrap { padding-top: 0; }
+body.embed .garden { box-shadow: none; background: rgba(255,255,255,.82); }
+
+/* incoming */
+#fx { position: fixed; inset: 0; pointer-events: none; z-index: 50; overflow: hidden; }
+.heart { position: absolute; font-size: 30px; animation: rise 1.6s ease-out forwards; }
+@keyframes rise { 0% { transform: translate(0, 0) scale(.3); opacity: 0 } 15% { opacity: 1; transform: translate(0, -20px) scale(1.15) } 100% { transform: translate(var(--dx), -320px) scale(.8); opacity: 0 } }
+.incoming { position: fixed; inset: 0; pointer-events: none; z-index: 45; width: 100%; height: 100%; }
+.toast { position: fixed; left: 50%; top: calc(env(safe-area-inset-top) + 12px); transform: translateX(-50%); z-index: 60; color: #fff; background: linear-gradient(120deg, #ff6b9e, #8c6bff); border-radius: 99px; padding: 10px 18px; font-weight: 800; font-size: 14px; box-shadow: var(--shadow); animation: drop .3s ease-out; white-space: nowrap; max-width: 92vw; overflow: hidden; text-overflow: ellipsis; }
+@keyframes drop { from { transform: translate(-50%, -30px); opacity: 0 } }
+.visitor { position: fixed; z-index: 55; bottom: calc(env(safe-area-inset-bottom) + 120px); right: -200px; display: flex; flex-direction: column; align-items: center; transition: right .9s cubic-bezier(.3, 1.4, .5, 1); pointer-events: auto; }
+.visitor.in { right: 22px; }
+.visitor.out { right: -220px; transition: right .6s ease-in; }
+.visitor img { width: 120px; height: 120px; object-fit: contain; animation: hop .7s ease-in-out infinite alternate; }
+@keyframes hop { to { transform: translateY(-8px) } }
+.bubble { color: #fff; background: linear-gradient(135deg, #ff6b9e, #8c6bff); border: 1px solid rgba(255,255,255,.35); border-radius: 20px; padding: 10px 14px; font-weight: 800; font-size: 15px; max-width: 230px; box-shadow: var(--shadow); margin-bottom: 6px; position: relative; text-align: center; word-wrap: break-word; }
+.bubble::after { content: ""; position: absolute; bottom: -8px; left: 50%; margin-left: -8px; border: 8px solid transparent; border-top-color: #b26bd0; border-bottom: 0; }
+.bubble .s { font-size: 34px; display: block; }
+.bubble small { display: block; font-size: 11px; color: rgba(255,255,255,.75); margin-top: 4px; }
+
+.mycode { font: 900 40px/1 ui-monospace, SFMono-Regular, monospace; letter-spacing: .18em; text-align: center; padding: 18px 0 14px; color: var(--ink); background: linear-gradient(135deg, #fff, #fff0f6); border-radius: 20px; margin: 6px 0 8px; user-select: all; -webkit-user-select: all; }
+.codein { text-transform: uppercase; letter-spacing: .25em; font-weight: 900; text-align: center; font-size: 22px; }
+.ghost { width: 100%; padding: 11px; border-radius: 14px; background: transparent; font-weight: 800; color: var(--soft); margin-top: 6px; }
+.ghost.danger { color: #d0476f; }
+.waiting { text-align: center; font-size: 12px; font-weight: 800; color: var(--soft); margin-top: 10px; }
+.pairedbox { margin-top: 4px; }
+.setup h2 { margin: 0 0 4px; font-size: 26px; font-weight: 900; }
+.setup p { margin: 0 0 8px; color: var(--soft); font-weight: 700; font-size: 14px; }
+</style>
+</head>
+<body>
+<div id="fx"></div>
+
+<div class="wrap hidden" id="setup">
+  <div class="card setup" id="stepHello">
+    <h2>Pal Link 💕</h2>
+    <p>Boops, doodles, voice notes and a garden you grow together.</p>
+    <div class="label">Your name</div>
+    <input class="field" id="sMe" autocomplete="off" maxlength="24" placeholder="Your name">
+    <div class="label">Your pal (what they'll see)</div>
+    <div class="pals" id="sPal">
+      <button data-pal="tushar"><img src="/pals/tushar.png" alt=""><span>Tissue</span></button>
+      <button data-pal="bae"><img src="/pals/bae.png" alt=""><span>Bae</span></button>
+      <button data-pal="cinnamoroll"><img src="/pals/cinnamoroll.png" alt=""><span>Cinnamon</span></button>
+      <button data-pal="hellokitty"><img src="/pals/hellokitty.png" alt=""><span>Kitty</span></button>
+    </div>
+    <div style="height:16px"></div>
+    <button class="primary" id="sHello">Continue ✨</button>
+  </div>
+  <div class="card setup hidden" id="stepPair">
+    <h2 id="pairTitle">Connect 💞</h2>
+    <p id="pairSub">Share your code, or enter theirs. Either one works.</p>
+    <div class="mycode" id="myCode">······</div>
+    <button class="ghost" id="shareCode">Share my code</button>
+    <div class="label">Their code</div>
+    <input class="field codein" id="theirCode" autocomplete="off" autocapitalize="characters" maxlength="7" placeholder="ABC123">
+    <div style="height:12px"></div>
+    <button class="primary" id="sPair">Connect 💞</button>
+    <div class="waiting" id="waiting">waiting for them to connect…</div>
+    <div class="pairedbox hidden" id="pairedBox">
+      <button class="primary" id="sBack">Back to us 💕</button>
+      <button class="ghost danger" id="sUnpair">Disconnect</button>
+    </div>
+    <button class="ghost" id="sEdit">Change my name or pal</button>
+  </div>
+</div>
+
+<div class="wrap hidden" id="main">
+  <div class="top">
+    <div class="avatar"><img id="pImg" alt=""><i class="dot" id="pDot"></i></div>
+    <div class="who"><h1 id="pName"></h1><p id="pStatus">connecting…</p></div>
+    <button class="stpill" id="stPill">🟢 Online</button>
+    <button class="gear" id="gear" aria-label="Settings">⚙️</button>
+  </div>
+  <div class="net hidden" id="net">No connection. Retrying…</div>
+  <div class="net dnd hidden" id="dnd">🔕 You're busy — boops, doodles and notes will wait until you're back</div>
+
+  <div class="card boopcard">
+    <button class="boop" id="boop" aria-label="Boop">
+      <svg viewBox="0 0 24 24"><path fill="#fff" d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.7 4.5c2.1 0 3.5 1.1 4.3 2.4.4.6 1.6.6 2 0 .8-1.3 2.2-2.4 4.3-2.4 3.7 0 5.8 3.9 4.3 7.3C19.5 16.4 12 21 12 21z"/></svg>
+    </button>
+    <div class="boopcount" id="boopCount">tap to boop</div>
+  </div>
+
+  <div class="row">
+    <button class="big" id="visitBtn"><span>💌</span>Send a visit<small id="visitSub">their pal brings it</small></button>
+    <button class="big" id="scribBtn"><span>✏️</span>Scribble<small>on their screen · 5s</small></button>
+  </div>
+
+  <button class="voice" id="voiceBtn"><span>🎙️</span><b>Record a voice note</b></button>
+  <div class="card notes hidden" id="notesCard"><h3>Voice notes 🎧</h3><div id="notesList" class="notes"></div></div>
+
+  <div class="card garden" id="garden">
+    <div class="ghead">
+      <div><div class="gkick" id="gKick">today's flower</div><h2 id="gName">Our garden</h2></div>
+      <div class="streak hidden" id="gStreak"></div>
+    </div>
+    <div class="stage" id="gArt"></div>
+    <div class="gbar"><i id="gBar"></i></div>
+    <div class="gsteps" id="gSteps"></div>
+    <div class="gchips" id="gChips"></div>
+    <div class="ghint" id="gHint"></div>
+    <div class="gbtns">
+      <button class="gbtn pickb" id="pickBtn">🌱 Choose flower</button>
+      <button class="gbtn water" id="waterBtn">💧 Water</button>
+    </div>
+    <div class="collection hidden" id="gCol">
+      <div class="colhead"><b>Our garden</b><span id="gCount"></span></div>
+      <div class="colrow" id="gRow"></div>
+    </div>
+  </div>
+</div>
+
+<div class="sheet-bg hidden" id="visitSheet">
+  <div class="sheet">
+    <h3>Send a visit 💌</h3>
+    <input class="field" id="note" maxlength="140" placeholder="thinking of you…" autocomplete="off">
+    <div class="stickers" id="stickers"></div>
+    <button class="primary" id="sendVisit">Send</button>
+  </div>
+</div>
+
+<div class="sheet-bg hidden" id="pickSheet">
+  <div class="sheet psheet">
+    <h3>Pick today's flower 🌷</h3>
+    <div class="vsub">you both have to agree — it grows today</div>
+    <div class="pgrid" id="pGrid"></div>
+  </div>
+</div>
+
+<div class="sheet-bg hidden" id="voiceSheet">
+  <div class="sheet vsheet">
+    <h3>Voice note to <span id="vTo"></span> 🎙️</h3>
+    <div class="vsub" id="vSub">tap the mic to start</div>
+    <div class="vwave" id="vWave"></div>
+    <div class="vclock" id="vClock">0:00</div>
+    <div class="vctl" id="vCtl"></div>
+  </div>
+</div>
+
+<div class="scrib hidden" id="scrib">
+  <canvas id="pad"></canvas>
+  <div class="hint" id="scribHint"></div>
+  <button class="close" id="scribClose" aria-label="Close">✕</button>
+  <div class="tools">
+    <div class="trow" id="colorRow"></div>
+    <div class="trow" id="toolRow"></div>
+  </div>
+</div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const PALS = { tushar: 'Tissue', bae: 'Bae', cinnamoroll: 'Cinnamoroll', hellokitty: 'Hello Kitty' };
+const STICKERS = ['💕', '😘', '🌸', '🧸', '☕', '🍕', '🌙', '🥺', '✨', '🫶'];
+const COLORS = ['#ff5a8a', '#7b6cf6', '#3fb3f0', '#43c46e', '#ffb02e', '#4a3550'];
+const LIFE = 5000;
+
+let cfg = load();
+let st = { boops: 0, partner: null, plant: null, failures: 0, polling: false, timer: null, serverSkew: 0 };
+
+function load() { try { return JSON.parse(localStorage.getItem('pal-link') || 'null'); } catch { return null; } }
+function save(c) { try { localStorage.setItem('pal-link', JSON.stringify(c)); } catch {} }
+
+// Mac app embeds just the garden: /?embed=garden&room=..&me=..&partner=..
+const EMBED = new URLSearchParams(location.search).get('embed') === 'garden';
+let inviteCode = '';
+(function fromLink() {
+  const q = new URLSearchParams(location.search);
+  if (EMBED) { cfg = { room: q.get('room'), me: q.get('me'), partner: q.get('partner'), pal: 'tushar' }; return; }
+  if (q.get('code')) { inviteCode = q.get('code').toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 6); history.replaceState(null, '', '/'); }
+  if (cfg && !cfg.uid) cfg = null; // pre-pairing configs are dropped
+})();
+const paired = () => !!(cfg && cfg.room && cfg.partner);
+
+// ---------- api ----------
+async function api(path, opts = {}) {
+  const r = await fetch(`/api/${path}`, { cache: 'no-store', ...opts, headers: { 'Content-Type': 'application/json', ...(opts.headers || {}) } });
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok || !j.ok) throw new Error(j.error || `HTTP ${r.status}`);
+  return j;
+}
+const qs = () => `room=${encodeURIComponent(cfg.room)}&me=${encodeURIComponent(cfg.me)}&partner=${encodeURIComponent(cfg.partner)}`;
+const post = (path, body) => api(path, { method: 'POST', body: JSON.stringify({ room: cfg.room, from: cfg.me, to: cfg.partner, ...body }) });
+
+async function send(kind, data) {
+  for (let i = 0; i < 3; i++) {
+    try {
+      const j = await post('send', { kind, data });
+      setPartner(j.partner, Date.now());
+      if (j.boops) setBoops(j.boops);
+      clearTimeout(st.plantT); st.plantT = setTimeout(loadPlant, 800);
+      return j;
+    } catch (e) {
+      if (i === 2) { toast('Couldn\'t send 😢 check your connection'); throw e; }
+      await new Promise((r) => setTimeout(r, 600 * (i + 1)));
+    }
+  }
+}
+
+// ---------- presence ----------
+function ago(ms) {
+  const s = Math.round(ms / 1000);
+  if (s < 60) return 'just now';
+  const m = Math.round(s / 60); if (m < 60) return `${m}m ago`;
+  const h = Math.round(m / 60); if (h < 24) return `${h}h ago`;
+  return `${Math.round(h / 24)}d ago`;
+}
+function setPartner(p, now) {
+  if (!p) return;
+  st.partner = p;
+  $('pDot').classList.toggle('on', p.online);
+  $('pDot').classList.toggle('busy', !!p.busy);
+  $('pStatus').textContent = p.busy ? '🔕 busy — things will wait' : p.online ? 'online now 💚' : p.lastSeen ? `offline · seen ${ago(now - p.lastSeen)}` : 'hasn\'t joined yet';
+  $('visitSub').textContent = p.online ? 'their pal brings it' : p.busy ? 'waits till they\'re free 🔕' : 'waits for them 💤';
+}
+
+// ---------- poll loop ----------
+async function poll() {
+  if (EMBED) return;
+  if (st.polling || document.hidden || !paired()) return;
+  st.polling = true;
+  try {
+    const j = await api(`poll?${qs()}${cfg.busy ? '&status=busy' : ''}`);
+    st.failures = 0;
+    $('net').classList.add('hidden');
+    setPartner(j.partner, j.now);
+    for (const ev of j.events) handle(ev);
+  } catch {
+    st.failures++;
+    if (st.failures >= 2) $('net').classList.remove('hidden');
+  } finally {
+    st.polling = false;
+    schedule();
+  }
+}
+function schedule() {
+  clearTimeout(st.timer);
+  if (document.hidden) return;
+  st.timer = setTimeout(poll, st.failures ? Math.min(15000, 2500 * 2 ** st.failures) : 2500);
+}
+document.addEventListener('visibilitychange', () => {
+  if (!cfg || EMBED) return;
+  if (document.hidden) {
+    clearTimeout(st.timer);
+    navigator.sendBeacon?.('/api/bye', JSON.stringify({ room: cfg.room, from: cfg.me }));
+  } else { poll(); loadPlant(); refreshLink(); }
+});
+window.addEventListener('pagehide', () => { if (paired() && !EMBED) navigator.sendBeacon?.('/api/bye', JSON.stringify({ room: cfg.room, from: cfg.me })); });
+window.addEventListener('online', () => poll());
+
+// ---------- incoming ----------
+function handle(ev) {
+  const who = ev.from || cfg.partner;
+  switch (ev.kind) {
+    case 'boop': hearts(10); buzz([40, 60, 40]); toast(`💕 ${who} booped you`); break;
+    case 'hug': hearts(14); buzz([30, 40, 30, 40, 30]); toast(`🫂 ${who} hugged back`); break;
+    case 'visit': visit(who, ev.data || {}); buzz(60); break;
+    case 'scribble': showScribble(ev.data); buzz(30); break;
+    case 'voice': gotVoice(who, ev.data || {}, ev.at); buzz([30, 30, 30]); break;
+    case 'plant': {
+      const d = ev.data || {};
+      const nm = d.name || 'flower';
+      if (d.action === 'pick') toast(d.agreed ? `🌱 ${who} agreed — it's a ${nm} day!` : `🌷 ${who} wants to grow ${nm} today`);
+      else if (d.action === 'bloom' || d.bloomed) { toast(`🌸 our ${nm} bloomed!`); hearts(14); }
+      else if (d.grew) toast(`💧 ${who} watered — our ${nm} is a ${String(d.stageName || '').toLowerCase()} now`);
+      else toast(`💧 ${who} watered our ${nm}`);
+      loadPlant();
+      break;
+    }
+  }
+}
+function buzz(p) { try { navigator.vibrate?.(p); } catch {} }
+
+let toastT;
+function toast(msg) {
+  document.querySelector('.toast')?.remove();
+  const t = document.createElement('div');
+  t.className = 'toast'; t.textContent = msg;
+  document.body.appendChild(t);
+  clearTimeout(toastT);
+  toastT = setTimeout(() => t.remove(), 3200);
+}
+
+function hearts(n, from) {
+  const fx = $('fx');
+  const r = from || { x: innerWidth / 2, y: innerHeight * 0.55 };
+  const glyphs = ['💕', '💖', '💗', '✨', '🩷'];
+  for (let i = 0; i < n; i++) {
+    const h = document.createElement('div');
+    h.className = 'heart';
+    h.textContent = glyphs[i % glyphs.length];
+    h.style.left = `${r.x - 15 + (Math.random() - 0.5) * 120}px`;
+    h.style.top = `${r.y}px`;
+    h.style.setProperty('--dx', `${(Math.random() - 0.5) * 160}px`);
+    h.style.animationDelay = `${i * 70}ms`;
+    fx.appendChild(h);
+    setTimeout(() => h.remove(), 1800 + i * 70);
+  }
+}
+
+const visitQueue = [];
+let visiting = false;
+function visit(who, data) {
+  visitQueue.push({ who, data });
+  if (!visiting) nextVisit();
+}
+function nextVisit() {
+  const v = visitQueue.shift();
+  if (!v) { visiting = false; return; }
+  visiting = true;
+  const el = document.createElement('div');
+  el.className = 'visitor';
+  const b = document.createElement('div');
+  b.className = 'bubble';
+  if (v.data.sticker) { const s = document.createElement('span'); s.className = 's'; s.textContent = v.data.sticker; b.appendChild(s); }
+  if (v.data.note) b.appendChild(document.createTextNode(v.data.note));
+  if (!v.data.note && !v.data.sticker) b.appendChild(document.createTextNode('thinking of you 💭'));
+  const sm = document.createElement('small'); sm.textContent = `from ${v.who} · tap to hug back`; b.appendChild(sm);
+  const img = document.createElement('img'); img.src = `/pals/${cfg.pal}.png`; img.alt = '';
+  el.append(b, img);
+  document.body.appendChild(el);
+  requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add('in')));
+  let gone = false;
+  const leave = (hugged) => {
+    if (gone) return; gone = true;
+    if (hugged) {
+      const r = img.getBoundingClientRect();
+      hearts(8, { x: r.left + r.width / 2, y: r.top });
+      img.src = `/pals/${cfg.pal}-love.png`;
+      send('hug', {}).catch(() => {});
+    }
+    setTimeout(() => {
+      el.classList.remove('in'); el.classList.add('out');
+      setTimeout(() => { el.remove(); nextVisit(); }, 650);
+    }, hugged ? 700 : 0);
+  };
+  el.addEventListener('click', () => leave(true));
+  setTimeout(() => leave(false), 9000);
+}
+
+// ---------- scribble (shared) ----------
+// Stroke: {c: colour, s: size, b: brush (pen|marker|neon|rainbow), p: [x,y,...]}
+function drawStroke(ctx, s, f, upto) {
+  const p = s.p; const n = Math.min(p.length, upto ?? p.length);
+  if (n < 2) return;
+  const X = (i) => f.ox + p[i] * f.k, Y = (i) => f.oy + p[i + 1] * f.k;
+  const w = Math.max(1.5, s.s * f.k);
+  const b = s.b || 'pen';
+  ctx.save();
+  ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+  const path = () => {
+    ctx.beginPath(); ctx.moveTo(X(0), Y(0));
+    if (n === 2) ctx.lineTo(X(0) + 0.01, Y(0));
+    for (let i = 2; i < n; i += 2) ctx.lineTo(X(i), Y(i));
+  };
+  if (b === 'rainbow') {
+    ctx.lineWidth = w;
+    if (n === 2) { ctx.strokeStyle = 'hsl(0 95% 60%)'; path(); ctx.stroke(); }
+    let dist = 0;
+    for (let i = 2; i < n; i += 2) {
+      dist += Math.hypot(p[i] - p[i - 2], p[i + 1] - p[i - 1]);
+      ctx.strokeStyle = `hsl(${Math.round(dist * 1.6) % 360} 95% 60%)`;
+      ctx.beginPath(); ctx.moveTo(X(i - 2), Y(i - 2)); ctx.lineTo(X(i), Y(i)); ctx.stroke();
+    }
+  } else if (b === 'neon') {
+    ctx.shadowColor = s.c; ctx.shadowBlur = w * 2.2;
+    ctx.strokeStyle = s.c; ctx.lineWidth = w; path(); ctx.stroke();
+    ctx.shadowBlur = 0; ctx.strokeStyle = 'rgba(255,255,255,.9)'; ctx.lineWidth = Math.max(1, w * 0.35); path(); ctx.stroke();
+  } else if (b === 'marker') {
+    ctx.globalAlpha *= 0.45; ctx.strokeStyle = s.c; ctx.lineWidth = w * 2.4; ctx.lineCap = 'square'; path(); ctx.stroke();
+  } else {
+    ctx.strokeStyle = s.c; ctx.lineWidth = w; path(); ctx.stroke();
+  }
+  ctx.restore();
+}
+function fitStrokes(data, W, H) {
+  const k = Math.min(W / data.w, H / data.h);
+  return { k, ox: (W - data.w * k) / 2, oy: (H - data.h * k) / 2 };
+}
+function showScribble(data) {
+  if (!data || !Array.isArray(data.strokes) || !data.w || !data.h) return;
+  const c = document.createElement('canvas');
+  c.className = 'incoming';
+  const dpr = devicePixelRatio || 1;
+  c.width = innerWidth * dpr; c.height = innerHeight * dpr;
+  document.body.appendChild(c);
+  const ctx = c.getContext('2d'); ctx.scale(dpr, dpr);
+  const f = fitStrokes(data, innerWidth, innerHeight);
+  const total = data.strokes.reduce((a, s) => a + s.p.length, 0) || 1;
+  const t0 = performance.now(); const replay = Math.min(1500, 500 + total / 8);
+  (function frame(now) {
+    const t = now - t0;
+    let budget = Math.ceil(total * Math.min(1, t / replay));
+    ctx.clearRect(0, 0, innerWidth, innerHeight);
+    for (const s of data.strokes) { if (budget <= 0) break; drawStroke(ctx, s, f, budget); budget -= s.p.length; }
+    c.style.opacity = t > LIFE - 1500 ? Math.max(0, (LIFE - t) / 1500) : 1;
+    if (t < LIFE) requestAnimationFrame(frame); else c.remove();
+  })(t0);
+}
+
+// ---------- scribble pad ----------
+const PALETTE = ['#ff5a8a', '#ff8a3d', '#ffd23f', '#43c46e', '#3fb3f0', '#7b6cf6', '#c86bfa', '#4a3550', '#ffffff'];
+const BRUSHES = [['pen', '✏️'], ['marker', '🖍️'], ['neon', '✨'], ['rainbow', '🌈']];
+const SIZES = [3, 6, 11, 18];
+const pen = { color: PALETTE[0], brush: 'pen', size: 6, mode: 'live' };
+let pad, padCtx, live = [], batch = [], sendT, drawing = null;
+function openScribble() {
+  $('scrib').classList.remove('hidden');
+  pad = $('pad');
+  const dpr = devicePixelRatio || 1;
+  pad.width = innerWidth * dpr; pad.height = innerHeight * dpr;
+  padCtx = pad.getContext('2d'); padCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  live = []; batch = [];
+  updateHint();
+  requestAnimationFrame(renderPad);
+}
+function closeScribble() {
+  if (pen.mode === 'live') flushBatch();
+  else if (batch.length && !confirmDiscard()) return;
+  $('scrib').classList.add('hidden'); live = []; batch = [];
+}
+function confirmDiscard() { toast('Tap Send 💌 to share your art, or ✕ again to discard'); const ok = closeScribble.armed; closeScribble.armed = true; setTimeout(() => (closeScribble.armed = false), 2500); return ok; }
+function updateHint() {
+  $('scribHint').textContent = pen.mode === 'live'
+    ? `⚡ live — strokes pop onto ${cfg.partner}'s screen as you lift`
+    : `🎨 art mode — draw your masterpiece, then tap Send`;
+}
+function renderPad() {
+  if ($('scrib').classList.contains('hidden')) return;
+  const now = performance.now();
+  padCtx.clearRect(0, 0, innerWidth, innerHeight);
+  live = live.filter((s) => !s.born || now - s.born < LIFE);
+  const f = { k: 1, ox: 0, oy: 0 };
+  for (const s of live) {
+    padCtx.globalAlpha = s.born ? Math.min(1, Math.max(0, (LIFE - (now - s.born)) / 1500)) : 1;
+    drawStroke(padCtx, s, f);
+  }
+  padCtx.globalAlpha = 1;
+  requestAnimationFrame(renderPad);
+}
+function flushBatch() {
+  clearTimeout(sendT);
+  if (!batch.length) return;
+  const strokes = batch; batch = [];
+  const now = performance.now();
+  strokes.forEach((s) => (s.born = now));
+  send('scribble', { w: Math.round(innerWidth), h: Math.round(innerHeight), strokes: strokes.map(({ c, s, b, p }) => ({ c, s, b, p })) })
+    .then(() => { if (pen.mode === 'art') toast(`🎨 masterpiece sent to ${cfg.partner}!`); })
+    .catch(() => {});
+}
+function undo() {
+  const last = batch.pop();
+  if (last) live = live.filter((s) => s !== last);
+}
+function setupPad() {
+  const p = $('pad');
+  const pt = (e) => [Math.round(e.clientX), Math.round(e.clientY)];
+  p.addEventListener('pointerdown', (e) => {
+    e.preventDefault(); clearTimeout(sendT);
+    p.setPointerCapture(e.pointerId);
+    drawing = { c: pen.color, s: pen.size, b: pen.brush, p: pt(e) };
+    live.push(drawing); batch.push(drawing);
+  });
+  p.addEventListener('pointermove', (e) => {
+    if (!drawing) return;
+    const evs = e.getCoalescedEvents ? e.getCoalescedEvents() : [e];
+    for (const ev of evs) {
+      const [x, y] = pt(ev); const q = drawing.p;
+      if (Math.hypot(x - q[q.length - 2], y - q[q.length - 1]) < 2) continue;
+      if (q.length < 4000) q.push(x, y);
+    }
+  });
+  const end = () => {
+    if (!drawing) return; drawing = null;
+    if (pen.mode === 'live') sendT = setTimeout(flushBatch, 700);
+  };
+  p.addEventListener('pointerup', end); p.addEventListener('pointercancel', end);
+  $('scribClose').onclick = closeScribble;
+
+  const colors = $('colorRow');
+  const custom = document.createElement('label'); custom.className = 'picker'; custom.title = 'Any colour';
+  const input = document.createElement('input'); input.type = 'color'; input.value = pen.color;
+  custom.appendChild(input); colors.appendChild(custom);
+  const markColor = () => colors.querySelectorAll('.sw').forEach((x) => x.classList.toggle('sel', x.dataset.c === pen.color));
+  input.addEventListener('input', () => {
+    pen.color = input.value; custom.style.background = input.value; markColor();
+    if (pen.brush === 'rainbow') { pen.brush = 'pen'; markTools(); }
+  });
+  for (const c of PALETTE) {
+    const b = document.createElement('button'); b.className = 'sw'; b.style.background = c; b.dataset.c = c;
+    b.onclick = () => { pen.color = c; markColor(); if (pen.brush === 'rainbow') { pen.brush = 'pen'; markTools(); } };
+    colors.appendChild(b);
+  }
+  markColor();
+
+  const tools = $('toolRow');
+  const markTools = () => {
+    tools.querySelectorAll('[data-brush]').forEach((x) => x.classList.toggle('sel', x.dataset.brush === pen.brush));
+    tools.querySelectorAll('[data-size]').forEach((x) => x.classList.toggle('sel', Number(x.dataset.size) === pen.size));
+    tools.querySelectorAll('[data-mode]').forEach((x) => x.classList.toggle('sel', x.dataset.mode === pen.mode));
+    sendBtn.classList.toggle('hidden', pen.mode !== 'art');
+  };
+  const btn = (html, cls, on) => { const b = document.createElement('button'); b.className = 'tb ' + (cls || ''); b.innerHTML = html; b.onclick = on; tools.appendChild(b); return b; };
+  for (const [id, icon] of BRUSHES) btn(icon, '', () => { pen.brush = id; markTools(); }).dataset.brush = id;
+  tools.appendChild(Object.assign(document.createElement('span'), { className: 'sep' }));
+  for (const sz of SIZES) btn(`<i style="width:${4 + sz * 0.8}px;height:${4 + sz * 0.8}px"></i>`, 'size', () => { pen.size = sz; markTools(); }).dataset.size = sz;
+  tools.appendChild(Object.assign(document.createElement('span'), { className: 'sep' }));
+  btn('↶', '', undo);
+  btn('⚡', '', () => { if (pen.mode !== 'live') { pen.mode = 'live'; flushBatch(); markTools(); updateHint(); } }).dataset.mode = 'live';
+  btn('🎨', '', () => { pen.mode = 'art'; clearTimeout(sendT); flushBatch(); markTools(); updateHint(); }).dataset.mode = 'art';
+  const sendBtn = btn('Send 💌', 'send', () => { if (batch.length) flushBatch(); else toast('Draw something first 🎨'); });
+  markTools();
+}
+
+// ---------- garden ----------
+let FLOWERS = [], FBY = {};
+const STAGE_LABELS = ['Seed', 'Sprout', 'Leafy', 'Bud', 'Bloom'];
+const pname = (t) => (t || '').replaceAll('{p}', cfg.partner);
+function mini(fid) { return Flower.svg(FBY[fid], 4); }
+function renderPlant(p, opts = {}) {
+  const prev = st.plant;
+  st.plant = p;
+  const f = FBY[p.flower];
+  const art = $('gArt');
+  art.innerHTML = Flower.svg(f, p.stage, { wet: !!opts.wet });
+  if (opts.wet || (prev && prev.stage !== p.stage)) { art.classList.remove('grow'); void art.offsetWidth; art.classList.add('grow'); }
+  $('gKick').textContent = p.bloomed ? 'bloomed today 🌸' : p.flower ? `today · ${p.stageName.toLowerCase()}` : "today's flower";
+  $('gName').textContent = f ? f.name : 'Nothing planted yet';
+  $('gStreak').classList.toggle('hidden', !p.streak);
+  $('gStreak').textContent = `🔥 ${p.streak} day${p.streak === 1 ? '' : 's'}`;
+  $('gBar').style.width = `${Math.min(100, (p.points / p.bloomAt) * 100)}%`;
+  $('gSteps').innerHTML = STAGE_LABELS.map((n, i) => `<span class="${p.stage >= i ? 'on' : ''}">${n}</span>`).join('');
+  $('gChips').innerHTML = '';
+  const chip = (txt, done) => { const c = document.createElement('span'); c.className = 'gchip' + (done ? ' done' : ''); c.textContent = txt; $('gChips').appendChild(c); };
+  chip(`💧 You ${p.meWater}/${p.maxWater}`, p.meWater > 0);
+  chip(`💧 ${cfg.partner} ${p.partnerWater}/${p.maxWater}`, p.partnerWater > 0);
+  chip(`✨ Love ${p.lovePoints}/2`, p.lovePoints >= 2);
+  $('gHint').textContent = pname(p.hint);
+  const w = $('waterBtn');
+  const growing = !!p.flower;
+  w.disabled = p.bloomed || p.meWater >= p.maxWater || p.waterWaitMin > 0 || (!growing && !p.votes.partner);
+  w.textContent = p.bloomed ? '🌸 Bloomed!' : p.meWater >= p.maxWater ? '✅ Watered' : p.waterWaitMin > 0 ? `💧 in ${p.waterWaitMin}m` : !growing && p.votes.partner ? `💧 Agree & water` : '💧 Water';
+  $('pickBtn').classList.toggle('hidden', growing && p.points > 0);
+  $('pickBtn').textContent = p.votes.me ? '🌱 Change pick' : '🌱 Choose flower';
+  const col = p.garden || [];
+  $('gCol').classList.toggle('hidden', !col.length);
+  $('gCount').textContent = `${p.collected}/${p.species} kinds · ${p.totalBlooms} blooms`;
+  $('gRow').innerHTML = col.slice().reverse().map((g) => `<div class="bloom"><div class="mini">${mini(g.flower)}</div>${FBY[g.flower]?.name || ''}<br>${g.date.slice(5).replace('-', '/')}</div>`).join('');
+  if (!$('pickSheet').classList.contains('hidden')) renderPicker();
+}
+async function loadPlant() {
+  try {
+    const j = await api(`plant?${qs()}${FLOWERS.length ? '' : '&catalog=1'}`);
+    if (j.flowers) { FLOWERS = j.flowers; FBY = Object.fromEntries(FLOWERS.map((f) => [f.id, f])); }
+    renderPlant(j.plant); setBoops(j.boops);
+  } catch {}
+}
+async function gardenPost(body) {
+  const r = await fetch('/api/plant', { method: 'POST', cache: 'no-store', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ room: cfg.room, from: cfg.me, to: cfg.partner, ...body }) });
+  return r.json();
+}
+async function waterPlant() {
+  $('waterBtn').disabled = true;
+  try {
+    const j = await gardenPost({ action: 'water' });
+    if (j.plant) renderPlant(j.plant, { wet: j.ok });
+    if (!j.ok) { toast(j.error || 'Couldn\'t water 😢'); return; }
+    const r = $('gArt').getBoundingClientRect();
+    buzz(30);
+    if (j.bloomed) { hearts(16, { x: r.left + r.width / 2, y: r.top + 80 }); toast(`🌸 our ${FBY[j.plant.flower].name} bloomed!`); }
+    else if (j.grew) { hearts(6, { x: r.left + r.width / 2, y: r.top + 120 }); toast(`🌱 it grew — ${j.plant.stageName.toLowerCase()} now!`); }
+    else toast('💧 watered!');
+  } catch { toast('Couldn\'t water 😢 try again'); loadPlant(); }
+}
+function renderPicker() {
+  const p = st.plant || { votes: {} };
+  $('pGrid').innerHTML = '';
+  for (const f of FLOWERS) {
+    const b = document.createElement('button');
+    b.className = 'pf' + (p.votes.me === f.id ? ' mine' : '');
+    b.innerHTML = `<div class="mini">${mini(f.id)}</div><b>${f.name}</b><small>${f.meaning}</small>` +
+      (p.votes.me === f.id ? '<span class="tag">you</span>' : '') + (p.votes.partner === f.id ? `<span class="tag p">${cfg.partner}</span>` : '');
+    b.onclick = () => pickFlower(f.id);
+    $('pGrid').appendChild(b);
+  }
+}
+function openPicker() {
+  if (!FLOWERS.length) return loadPlant();
+  renderPicker();
+  $('pickSheet').classList.remove('hidden');
+}
+async function pickFlower(fid) {
+  try {
+    const j = await gardenPost({ action: 'pick', flower: fid });
+    if (j.plant) renderPlant(j.plant);
+    if (!j.ok) return toast(j.error || 'Couldn\'t pick 😢');
+    $('pickSheet').classList.add('hidden');
+    toast(j.agreed ? `🌱 it's a ${FBY[fid].name} day! water it 💧` : `💌 asked ${cfg.partner} to grow ${FBY[fid].name}`);
+    if (j.agreed) hearts(8);
+  } catch { toast('Couldn\'t pick 😢'); }
+}
+
+// ---------- boops ----------
+function setBoops(n) {
+  if (typeof n !== 'number' || n < st.boops) return;
+  st.boops = n;
+  $('boopCount').textContent = n ? `${n.toLocaleString()} boops together 💕` : 'tap to boop';
+}
+let lastBoop = 0;
+function boop() {
+  const now = Date.now();
+  if (now - lastBoop < 350) return;
+  lastBoop = now;
+  const b = $('boop'); b.classList.remove('pulse'); void b.offsetWidth; b.classList.add('pulse');
+  const r = b.getBoundingClientRect();
+  hearts(6, { x: r.left + r.width / 2, y: r.top + 30 });
+  buzz(25);
+  send('boop', {}).then((j) => { if (j && !j.partner.online) toast(`💤 ${cfg.partner} is offline — they'll get it when they're back`); }).catch(() => {});
+}
+
+// ---------- visit sheet ----------
+let sticker = '💕';
+function setupVisit() {
+  const box = $('stickers');
+  for (const s of STICKERS) {
+    const b = document.createElement('button'); b.textContent = s; if (s === sticker) b.className = 'sel';
+    b.onclick = () => { sticker = sticker === s ? '' : s; box.querySelectorAll('button').forEach((x) => x.classList.toggle('sel', x.textContent === sticker)); };
+    box.appendChild(b);
+  }
+  $('visitBtn').onclick = () => { $('visitSheet').classList.remove('hidden'); setTimeout(() => $('note').focus(), 250); };
+  $('visitSheet').addEventListener('click', (e) => { if (e.target.id === 'visitSheet') $('visitSheet').classList.add('hidden'); });
+  $('sendVisit').onclick = async () => {
+    const note = $('note').value.trim();
+    $('sendVisit').disabled = true;
+    try {
+      const j = await send('visit', { note, sticker });
+      $('note').value = ''; $('visitSheet').classList.add('hidden');
+      toast(j.partner.online ? `💌 your pal is on the way to ${cfg.partner}` : `💌 sent — ${cfg.partner} will see it when they're back`);
+    } catch {} finally { $('sendVisit').disabled = false; }
+  };
+  $('note').addEventListener('keydown', (e) => { if (e.key === 'Enter') $('sendVisit').click(); });
+}
+
+// ---------- voice notes ----------
+let notes = (() => { try { return JSON.parse(localStorage.getItem('pal-notes') || '[]'); } catch { return []; } })();
+let playing = null;
+function saveNotes() {
+  notes = notes.slice(0, 6);
+  for (let n = notes.length; n >= 0; n--) {
+    try { localStorage.setItem('pal-notes', JSON.stringify(notes.slice(0, n))); return; } catch {}
+  }
+}
+function renderNotes() {
+  $('notesCard').classList.toggle('hidden', !notes.length);
+  const list = $('notesList'); list.innerHTML = '';
+  notes.forEach((n, i) => {
+    const row = document.createElement('div'); row.className = 'vn' + (n.fresh ? ' new' : '');
+    const b = document.createElement('button'); b.textContent = '▶';
+    const w = document.createElement('div'); w.className = 'wave'; const bar = document.createElement('i'); w.appendChild(bar);
+    const sm = document.createElement('small'); sm.textContent = `${n.from} · ${Math.round(n.secs)}s · ${ago(Date.now() - n.at)}`;
+    b.onclick = () => playNote(i, b, bar);
+    row.append(b, w, sm); list.appendChild(row);
+  });
+}
+function playNote(i, btn, bar) {
+  const n = notes[i]; if (!n) return;
+  if (playing) { playing.a.pause(); playing.btn.textContent = '▶'; const same = playing.i === i; playing = null; if (same) return; }
+  const a = new Audio(`data:${n.mime};base64,${n.b64}`);
+  playing = { a, btn, i };
+  btn.textContent = '❚❚';
+  a.ontimeupdate = () => { bar.style.width = `${Math.min(100, (a.currentTime / (a.duration || n.secs)) * 100)}%`; };
+  a.onended = () => { btn.textContent = '▶'; bar.style.width = '100%'; playing = null; };
+  a.play().catch(() => { btn.textContent = '▶'; playing = null; toast('Couldn\'t play this one 😢'); });
+  if (n.fresh) { n.fresh = false; saveNotes(); btn.closest('.vn').classList.remove('new'); }
+}
+function gotVoice(who, d, at) {
+  if (!d.b64 || !d.mime) return;
+  notes.unshift({ from: who, mime: d.mime, b64: d.b64, secs: d.secs || 0, at: at || Date.now(), fresh: true });
+  saveNotes(); renderNotes();
+  toast(`🎙️ ${who} sent you a voice note`);
+  hearts(4);
+}
+
+// Record → review → send. Sheet stays open until sent or dismissed.
+const VBARS = 30;
+const vr = { phase: 'idle', mr: null, stream: null, chunks: [], t0: 0, tick: null, ctx: null, analyser: null, raf: 0, blob: null, secs: 0, audio: null, levels: [] };
+function pickMime() {
+  if (!window.MediaRecorder) return null;
+  return ['audio/mp4', 'audio/webm;codecs=opus', 'audio/webm', 'audio/ogg'].find((m) => MediaRecorder.isTypeSupported?.(m)) || '';
+}
+const clock = (t) => `${Math.floor(t / 60)}:${String(Math.floor(t % 60)).padStart(2, '0')}`;
+function vbars(levels, progress) {
+  const w = $('vWave'); w.innerHTML = '';
+  w.classList.toggle('live', vr.phase === 'recording');
+  for (let i = 0; i < VBARS; i++) {
+    const v = levels[levels.length - VBARS + i] ?? 0.05;
+    const bar = document.createElement('i');
+    bar.style.height = `${Math.max(6, v * 60)}px`;
+    if (progress != null && i / VBARS < progress) bar.className = 'on';
+    w.appendChild(bar);
+  }
+}
+function vrender() {
+  const c = $('vCtl'); c.innerHTML = '';
+  const b = (cls, html, on) => { const x = document.createElement('button'); x.className = cls; x.innerHTML = html; x.onclick = on; c.appendChild(x); return x; };
+  if (vr.phase === 'idle') {
+    $('vSub').textContent = cfg.partner && st.partner?.online ? `${cfg.partner} is online` : 'tap the mic to start';
+    b('rbtn', '🎙️', vstart); vbars([], null); $('vClock').textContent = '0:00';
+  } else if (vr.phase === 'recording') {
+    $('vSub').textContent = 'recording… stop whenever you\'re done';
+    b('rbtn rec', '<span class="sq"></span>', vstop);
+  } else {
+    $('vSub').textContent = 'listen back, redo or send';
+    b('vpill', '↺ Redo', () => { vreset(); vstart(); });
+    b('pbtn', vr.audio && !vr.audio.paused ? '❚❚' : '▶', vplay);
+    b('vpill send', 'Send ➤', vsend);
+    $('vClock').textContent = clock(vr.secs);
+  }
+}
+function openVoice() {
+  if (pickMime() === null) return toast('Voice notes aren\'t supported in this browser');
+  $('vTo').textContent = cfg.partner;
+  $('voiceSheet').classList.remove('hidden');
+  vreset(); vstart();
+}
+function closeVoice() { vreset(); $('voiceSheet').classList.add('hidden'); }
+function vreset() {
+  clearInterval(vr.tick); cancelAnimationFrame(vr.raf);
+  if (vr.mr && vr.mr.state !== 'inactive') { vr.mr.onstop = null; vr.mr.stop(); }
+  vr.stream?.getTracks().forEach((t) => t.stop());
+  vr.ctx?.close().catch(() => {});
+  if (vr.audio) { vr.audio.pause(); URL.revokeObjectURL(vr.audio.src); vr.audio = null; }
+  Object.assign(vr, { phase: 'idle', mr: null, stream: null, chunks: [], ctx: null, analyser: null, blob: null, secs: 0, levels: [] });
+  vrender();
+}
+async function vstart() {
+  try { vr.stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true } }); }
+  catch { toast('Mic blocked — allow microphone access 🎙️'); return; }
+  if ($('voiceSheet').classList.contains('hidden')) { vr.stream.getTracks().forEach((t) => t.stop()); return; }
+  const mime = pickMime();
+  vr.mr = new MediaRecorder(vr.stream, { ...(mime ? { mimeType: mime } : {}), audioBitsPerSecond: 32000 });
+  vr.chunks = [];
+  vr.mr.ondataavailable = (e) => e.data.size && vr.chunks.push(e.data);
+  vr.mr.onstop = vdone;
+  vr.mr.start(250);
+  vr.t0 = performance.now(); vr.phase = 'recording'; vr.levels = [];
+  try {
+    vr.ctx = new (window.AudioContext || window.webkitAudioContext)();
+    vr.analyser = vr.ctx.createAnalyser(); vr.analyser.fftSize = 256;
+    vr.ctx.createMediaStreamSource(vr.stream).connect(vr.analyser);
+  } catch {}
+  const buf = new Uint8Array(128);
+  const loop = () => {
+    if (vr.phase !== 'recording') return;
+    let lv = 0.15 + Math.random() * 0.2;
+    if (vr.analyser) {
+      vr.analyser.getByteTimeDomainData(buf);
+      let sum = 0; for (const x of buf) sum += ((x - 128) / 128) ** 2;
+      lv = Math.min(1, Math.sqrt(sum / buf.length) * 4);
+    }
+    vr.levels.push(Math.max(0.06, lv));
+    vbars(vr.levels, null);
+    const t = (performance.now() - vr.t0) / 1000;
+    $('vClock').textContent = `${clock(t)} / 0:30`;
+    if (t >= 30) { vstop(); return; }
+    vr.raf = requestAnimationFrame(() => setTimeout(loop, 60));
+  };
+  loop();
+  vrender(); buzz(15);
+}
+function vstop() {
+  if (vr.phase !== 'recording') return;
+  vr.secs = Math.min(30, (performance.now() - vr.t0) / 1000);
+  vr.phase = 'stopping';
+  vr.mr.stop();
+}
+function vdone() {
+  vr.stream?.getTracks().forEach((t) => t.stop());
+  vr.ctx?.close().catch(() => {}); vr.ctx = null;
+  if (vr.secs < 0.5) { toast('Too short — try again 🎙️'); vreset(); return; }
+  vr.blob = new Blob(vr.chunks, { type: (vr.mr.mimeType || 'audio/mp4').split(';')[0] });
+  vr.phase = 'review';
+  const sample = [];
+  for (let i = 0; i < VBARS; i++) sample.push(vr.levels[Math.floor((i / VBARS) * vr.levels.length)] ?? 0.1);
+  vr.levels = sample;
+  vbars(vr.levels, 0); vrender();
+}
+function vplay() {
+  if (vr.audio && !vr.audio.paused) { vr.audio.pause(); vrender(); return; }
+  if (!vr.audio) {
+    const a = new Audio(URL.createObjectURL(vr.blob));
+    vr.audio = a;
+    a.ontimeupdate = () => { if (vr.audio === a) vbars(vr.levels, a.currentTime / (a.duration && isFinite(a.duration) ? a.duration : vr.secs)); };
+    a.onended = () => { if (vr.audio !== a) return; vbars(vr.levels, 1); a.currentTime = 0; vrender(); };
+  }
+  vr.audio.play().then(vrender).catch(() => toast('Couldn\'t play it back'));
+}
+async function vsend() {
+  const blob = vr.blob, secs = vr.secs;
+  if (!blob) return;
+  const btn = $('vCtl').querySelector('.send'); if (btn) { btn.disabled = true; btn.textContent = 'Sending…'; }
+  const b64 = await new Promise((res) => { const fr = new FileReader(); fr.onload = () => res(String(fr.result).split(',')[1] || ''); fr.readAsDataURL(blob); });
+  try {
+    const j = await send('voice', { mime: blob.type || 'audio/mp4', b64, secs: Math.round(secs * 10) / 10 });
+    closeVoice();
+    toast(j.partner.online ? `🎙️ voice note sent to ${cfg.partner}` : `🎙️ sent — ${cfg.partner} will hear it when they're back`);
+  } catch { if (btn) { btn.disabled = false; btn.textContent = 'Send ➤'; } }
+}
+function setupVoice() {
+  $('voiceBtn').onclick = openVoice;
+  $('voiceSheet').addEventListener('click', (e) => { if (e.target.id === 'voiceSheet') closeVoice(); });
+  renderNotes();
+}
+
+// ---------- setup / pairing ----------
+let linkT;
+const uidNew = () => (crypto.randomUUID ? crypto.randomUUID() : Array.from(crypto.getRandomValues(new Uint8Array(16)), (b) => b.toString(16).padStart(2, '0')).join(''));
+async function linkApi(body) {
+  const r = await fetch('/api/link', body ? { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ uid: cfg.uid, ...body }) } : { cache: 'no-store' });
+  const j = await r.json().catch(() => ({}));
+  if (!j.ok) throw new Error(j.error || 'Something went wrong');
+  return j.me;
+}
+const linkGet = async () => { const r = await fetch(`/api/link?uid=${encodeURIComponent(cfg.uid)}`, { cache: 'no-store' }); const j = await r.json().catch(() => ({})); if (r.status === 404) return null; if (!j.ok) throw new Error(j.error); return j.me; };
+
+// Applies the server profile; returns true when paired.
+function applyMe(me) {
+  if (!me) return false;
+  const was = paired() ? cfg.room : null;
+  Object.assign(cfg, { code: me.code, myName: me.name, myPal: me.pal });
+  if (me.paired) Object.assign(cfg, { room: me.room, me: me.name, partner: me.partner.name, pal: me.partner.pal || 'tushar', partnerCode: me.partner.code });
+  else Object.assign(cfg, { room: null, me: null, partner: null, partnerCode: null });
+  save(cfg);
+  return me.paired && was !== me.room;
+}
+
+function showSetup(edit) {
+  $('main').classList.add('hidden'); $('setup').classList.remove('hidden');
+  clearTimeout(st.timer);
+  const needHello = edit || !cfg?.uid || !cfg?.code;
+  $('stepHello').classList.toggle('hidden', !needHello);
+  $('stepPair').classList.toggle('hidden', needHello);
+  if (needHello) {
+    let pal = cfg?.myPal || 'tushar';
+    $('sMe').value = cfg?.myName || '';
+    const pals = $('sPal').querySelectorAll('button');
+    const mark = () => pals.forEach((b) => b.classList.toggle('sel', b.dataset.pal === pal));
+    pals.forEach((b) => (b.onclick = () => { pal = b.dataset.pal; mark(); }));
+    mark();
+    $('sHello').onclick = async () => {
+      const name = $('sMe').value.trim();
+      if (!name) return toast('Enter your name');
+      cfg = cfg || {};
+      cfg.uid = cfg.uid || uidNew();
+      $('sHello').disabled = true;
+      try { applyMe(await linkApi({ action: 'hello', name, pal })); paired() ? start() : showSetup(); }
+      catch (e) { toast(e.message); } finally { $('sHello').disabled = false; }
+    };
+    return;
+  }
+  renderPairStep();
+  clearInterval(linkT);
+  linkT = setInterval(async () => {
+    if ($('setup').classList.contains('hidden')) return clearInterval(linkT);
+    try { const me = await linkGet(); if (applyMe(me)) { clearInterval(linkT); hearts(14); toast(`💞 connected with ${cfg.partner}!`); start(); } else renderPairStep(); } catch {}
+  }, 3000);
+}
+function renderPairStep() {
+  $('myCode').textContent = cfg.code || '······';
+  const on = paired();
+  $('pairTitle').textContent = on ? `Connected with ${cfg.partner} 💞` : 'Connect 💞';
+  $('pairSub').textContent = on ? 'This is your code. Enter a new one to switch.' : 'Share your code, or enter theirs. Either one works.';
+  $('waiting').classList.toggle('hidden', on);
+  $('pairedBox').classList.toggle('hidden', !on);
+  if (inviteCode && !$('theirCode').value) $('theirCode').value = inviteCode;
+}
+function setupPairing() {
+  $('shareCode').onclick = async () => {
+    const url = `${location.origin}/?code=${cfg.code}`;
+    const text = `Connect with me on Pal Link 💕 my code is ${cfg.code}`;
+    try { if (navigator.share) await navigator.share({ title: 'Pal Link', text, url }); else { await navigator.clipboard.writeText(`${text}\n${url}`); toast('Copied 💌'); } } catch {}
+  };
+  $('sPair').onclick = async () => {
+    const code = $('theirCode').value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+    if (code.length !== 6) return toast('Codes are 6 letters/numbers');
+    $('sPair').disabled = true;
+    try {
+      const me = await linkApi({ action: 'pair', code });
+      inviteCode = ''; $('theirCode').value = '';
+      applyMe(me); hearts(14); toast(`💞 connected with ${cfg.partner}!`); start();
+    } catch (e) { toast(e.message); } finally { $('sPair').disabled = false; }
+  };
+  $('sUnpair').onclick = async () => {
+    if (!$('sUnpair').dataset.armed) { $('sUnpair').dataset.armed = '1'; $('sUnpair').textContent = 'Tap again to disconnect'; setTimeout(() => { delete $('sUnpair').dataset.armed; $('sUnpair').textContent = 'Disconnect'; }, 3000); return; }
+    try { applyMe(await linkApi({ action: 'unpair' })); toast('Disconnected'); showSetup(); } catch (e) { toast(e.message); }
+  };
+  $('sBack').onclick = () => start();
+  $('sEdit').onclick = () => showSetup(true);
+}
+
+function renderBusy() {
+  $('stPill').textContent = cfg.busy ? '🔕 Busy' : '🟢 Online';
+  $('stPill').classList.toggle('busy', !!cfg.busy);
+  $('dnd').classList.toggle('hidden', !cfg.busy);
+}
+function toggleBusy() {
+  cfg.busy = !cfg.busy; save(cfg); renderBusy();
+  toast(cfg.busy ? '🔕 Busy — everything waits until you\'re back' : '🟢 Online — catching up…');
+  clearTimeout(st.timer); poll();
+}
+function start() {
+  if (!paired()) return showSetup();
+  clearInterval(linkT);
+  $('setup').classList.add('hidden'); $('main').classList.remove('hidden');
+  renderBusy();
+  $('pName').textContent = cfg.partner;
+  $('pImg').src = `/pals/${cfg.pal}.png`;
+  poll(); loadPlant();
+}
+// Picks up renames, pal changes or a disconnect from the other side.
+async function refreshLink() {
+  if (EMBED || !cfg?.uid || document.hidden) return;
+  try {
+    const me = await linkGet();
+    if (!me) return;
+    const before = cfg.room;
+    applyMe(me);
+    if (!paired()) { toast(`💔 disconnected`); showSetup(); }
+    else if (before !== cfg.room) start();
+    else { $('pName').textContent = cfg.partner; $('pImg').src = `/pals/${cfg.pal}.png`; }
+  } catch {}
+}
+
+$('boop').addEventListener('click', boop);
+$('scribBtn').onclick = openScribble;
+$('waterBtn').onclick = waterPlant;
+$('pickBtn').onclick = openPicker;
+$('pickSheet').addEventListener('click', (e) => { if (e.target.id === 'pickSheet') $('pickSheet').classList.add('hidden'); });
+$('gear').onclick = () => showSetup();
+$('stPill').onclick = toggleBusy;
+setupVisit(); setupPad(); setupVoice(); setupPairing();
+setInterval(() => { if (!document.hidden && paired()) loadPlant(); }, 120000);
+if (EMBED) {
+  document.body.classList.add('embed');
+  setInterval(loadPlant, 15000);
+} else if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(() => {});
+if (EMBED) start(); else { paired() ? start() : showSetup(); setInterval(refreshLink, 60000); }
+</script>
+</body>
+</html>
