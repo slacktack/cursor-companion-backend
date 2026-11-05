@@ -30,6 +30,10 @@ async function profile(uid, u) {
 }
 
 export async function GET(req) {
+  try { return await get(req); } catch (e) { return json({ ok: false, error: e.message }, 500); }
+}
+
+async function get(req) {
   const uid = new URL(req.url).searchParams.get('uid');
   if (!UID.test(uid || '')) return bad('bad uid');
   const u = await getUser(uid);
@@ -38,6 +42,10 @@ export async function GET(req) {
 }
 
 export async function POST(req) {
+  try { return await post(req); } catch (e) { return json({ ok: false, error: e.message }, 500); }
+}
+
+async function post(req) {
   let b;
   try { b = await readBody(req, 4000); } catch { return bad('bad body'); }
   const { action, uid } = b;

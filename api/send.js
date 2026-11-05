@@ -6,6 +6,10 @@ const KINDS = new Set(['boop', 'visit', 'scribble', 'hug', 'voice']);
 const AUDIO = /^audio\/(mp4|aac|x-m4a|m4a|webm|ogg|mpeg)(;.*)?$/;
 
 export async function POST(req) {
+  try { return await post(req); } catch (e) { return json({ ok: false, error: e.message }, 500); }
+}
+
+async function post(req) {
   let b;
   try { b = await readBody(req, 900_000); } catch { return bad('bad body'); }
   const { room, from, to, kind, data } = b;

@@ -17,6 +17,10 @@ function event(from, data, now) {
 const push = (room, to, ev) => [['RPUSH', k.inbox(room, to), ev], ['LTRIM', k.inbox(room, to), -60, -1], ['EXPIRE', k.inbox(room, to), 3 * 86400]];
 
 export async function GET(req) {
+  try { return await get(req); } catch (e) { return json({ ok: false, error: e.message }, 500); }
+}
+
+async function get(req) {
   const q = new URL(req.url).searchParams;
   const room = q.get('room'), me = q.get('me'), partner = q.get('partner');
   if (!checkRoom(room) || !checkName(me) || !checkName(partner)) return bad('bad room or names');
@@ -31,6 +35,10 @@ export async function GET(req) {
 }
 
 export async function POST(req) {
+  try { return await post(req); } catch (e) { return json({ ok: false, error: e.message }, 500); }
+}
+
+async function post(req) {
   let b;
   try { b = await readBody(req, 4000); } catch { return bad('bad body'); }
   const { room, from, to, action = 'water', flower } = b;

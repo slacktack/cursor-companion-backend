@@ -3,6 +3,10 @@ import { json, bad, checkRoom, checkName, k, presence } from '../lib/common.js';
 
 // Drains my inbox (unless busy), marks me online and reports my partner's presence.
 export async function GET(req) {
+  try { return await get(req); } catch (e) { return json({ ok: false, error: e.message }, 500); }
+}
+
+async function get(req) {
   const q = new URL(req.url).searchParams;
   const room = q.get('room'), me = q.get('me'), partner = q.get('partner');
   if (!checkRoom(room) || !checkName(me) || !checkName(partner)) return bad('bad room or names');

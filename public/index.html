@@ -213,6 +213,7 @@ body.embed .garden { box-shadow: none; background: rgba(255,255,255,.82); }
 .bubble small { display: block; font-size: 11px; color: rgba(255,255,255,.75); margin-top: 4px; }
 
 .mycode { font: 900 40px/1 ui-monospace, SFMono-Regular, monospace; letter-spacing: .18em; text-align: center; padding: 18px 0 14px; color: var(--ink); background: linear-gradient(135deg, #fff, #fff0f6); border-radius: 20px; margin: 6px 0 8px; user-select: all; -webkit-user-select: all; }
+.codein::placeholder { color: #e2d3dc; letter-spacing: .25em; }
 .codein { text-transform: uppercase; letter-spacing: .25em; font-weight: 900; text-align: center; font-size: 22px; }
 .ghost { width: 100%; padding: 11px; border-radius: 14px; background: transparent; font-weight: 800; color: var(--soft); margin-top: 6px; }
 .ghost.danger { color: #d0476f; }
@@ -247,7 +248,7 @@ body.embed .garden { box-shadow: none; background: rgba(255,255,255,.82); }
     <div class="mycode" id="myCode">······</div>
     <button class="ghost" id="shareCode">Share my code</button>
     <div class="label">Their code</div>
-    <input class="field codein" id="theirCode" autocomplete="off" autocapitalize="characters" maxlength="7" placeholder="ABC123">
+    <input class="field codein" id="theirCode" autocomplete="off" autocapitalize="characters" maxlength="7" placeholder="······">
     <div style="height:12px"></div>
     <button class="primary" id="sPair">Connect 💞</button>
     <div class="waiting" id="waiting">waiting for them to connect…</div>
