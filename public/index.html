@@ -1016,7 +1016,14 @@ async function linkApi(body) {
   if (!j.ok) throw new Error(j.error || 'Something went wrong');
   return j.me;
 }
-const linkGet = async () => { const r = await fetch(`/api/link?uid=${encodeURIComponent(cfg.uid)}`, { cache: 'no-store' }); const j = await r.json().catch(() => ({})); if (r.status === 404) return null; if (!j.ok) throw new Error(j.error); return j.me; };
+// Unknown uid (fresh server store) → register again with the saved name.
+const linkGet = async () => {
+  const r = await fetch(`/api/link?uid=${encodeURIComponent(cfg.uid)}`, { cache: 'no-store' });
+  const j = await r.json().catch(() => ({}));
+  if (r.status === 404 && cfg.myName) return linkApi({ action: 'hello', name: cfg.myName, pal: cfg.myPal || 'tushar' });
+  if (!j.ok) throw new Error(j.error);
+  return j.me;
+};
 
 // Applies the server profile; returns true when paired.
 function applyMe(me) {
@@ -1054,6 +1061,7 @@ function showSetup(edit) {
     return;
   }
   renderPairStep();
+  linkGet().then((me) => { applyMe(me); paired() ? start() : renderPairStep(); }).catch(() => {});
   clearInterval(linkT);
   linkT = setInterval(async () => {
     if ($('setup').classList.contains('hidden')) return clearInterval(linkT);
