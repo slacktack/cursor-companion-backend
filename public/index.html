@@ -248,7 +248,7 @@ body.embed .garden { box-shadow: none; background: rgba(255,255,255,.82); }
     <div class="mycode" id="myCode">······</div>
     <button class="ghost" id="shareCode">Share my code</button>
     <div class="label">Their code</div>
-    <input class="field codein" id="theirCode" autocomplete="off" autocapitalize="characters" maxlength="7" placeholder="······">
+    <input class="field codein" id="theirCode" autocomplete="off" autocapitalize="characters" placeholder="······">
     <div style="height:12px"></div>
     <button class="primary" id="sPair">Connect 💞</button>
     <div class="waiting" id="waiting">waiting for them to connect…</div>
@@ -1077,7 +1077,16 @@ function renderPairStep() {
   $('pairedBox').classList.toggle('hidden', !on);
   if (inviteCode && !$('theirCode').value) $('theirCode').value = inviteCode;
 }
+// Accepts a bare code, the invite text or the invite link.
+function extractCode(raw) {
+  const up = String(raw || '').toUpperCase();
+  const m = up.match(/CODE=([A-Z0-9]{6})/) || up.match(/CODE IS ([A-Z0-9]{6})/);
+  if (m) return m[1];
+  const bare = up.replace(/[^A-Z0-9]/g, '');
+  return bare.length <= 6 ? bare : (up.split(/[^A-Z0-9]+/).reverse().find((w) => w.length === 6 && /\d/.test(w)) || bare.slice(0, 6));
+}
 function setupPairing() {
+  $('theirCode').addEventListener('input', () => { const c = extractCode($('theirCode').value); if (c !== $('theirCode').value) $('theirCode').value = c; });
   $('shareCode').onclick = async () => {
     const url = `${location.origin}/?code=${cfg.code}`;
     const text = `Connect with me on Pal Link 💕 my code is ${cfg.code}`;
